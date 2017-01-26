@@ -11,9 +11,11 @@ import com.loopj.android.http.*;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class RestAPI {
-    private static final String BASE_URL = "http://apiurl.lol/";
+    private static final String BASE_URL = "http://www.socialhive.fr:4242/";
 
     private static AsyncHttpClient client = SingletonAsyncHttpClient.getInstance();
+
+    public static AsyncHttpClient getClient() {return client; }
 
     public static void addHeader(String header, String value) {
         client.addHeader(header, value);

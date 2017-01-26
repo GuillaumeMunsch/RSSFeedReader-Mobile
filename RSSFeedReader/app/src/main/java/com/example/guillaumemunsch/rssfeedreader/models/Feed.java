@@ -8,7 +8,9 @@ import java.io.Serializable;
 
 public class Feed implements Serializable {
     private int id;
-    private String title;
+    private String name;
+    private String url;
+    private int owner_id;
 
     public int getId() {
         return id;
@@ -18,16 +20,34 @@ public class Feed implements Serializable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Feed(int id, String title) {
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public int getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(int owner_id) {
+        this.owner_id = owner_id;
+    }
+
+    public Feed(int id, String name, String url, int owner_id) {
         this.id = id;
-        this.title = title;
+        this.name = name;
+        this.url = url;
+        this.owner_id = owner_id;
     }
 }

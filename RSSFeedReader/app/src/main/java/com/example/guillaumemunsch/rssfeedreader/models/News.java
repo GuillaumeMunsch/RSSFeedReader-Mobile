@@ -1,22 +1,15 @@
 package com.example.guillaumemunsch.rssfeedreader.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by guillaumemunsch on 25/01/2017.
  */
 
 public class News implements Serializable {
-    private int id;
     private String title;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private List<NewsItem> items;
 
     public String getTitle() {
         return title;
@@ -26,8 +19,16 @@ public class News implements Serializable {
         this.title = title;
     }
 
-    public News(int id, String title) {
-        this.id = id;
+    public List<NewsItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<NewsItem> items) {
+        this.items = items;
+    }
+
+    public News(String title, List<NewsItem> items) {
         this.title = title;
+        this.items = items;
     }
 }

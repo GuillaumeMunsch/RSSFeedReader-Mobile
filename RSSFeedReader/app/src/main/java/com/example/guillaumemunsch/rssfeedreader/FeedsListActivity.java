@@ -50,29 +50,31 @@ public class FeedsListActivity extends AppCompatActivity {
         loading.setVisibility(View.GONE);
         if (feedsList.size() == 0) {
             emptyText.setVisibility(View.VISIBLE);
-            feedsListView.setVisibility(View.INVISIBLE);
+            swipeContainer.setVisibility(View.INVISIBLE);
         } else {
-            feedsListView.setVisibility(View.VISIBLE);
+            swipeContainer.setVisibility(View.VISIBLE);
             emptyText.setVisibility(View.INVISIBLE);
         }
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, Utils.transform(feedsList, "title"));
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, Utils.transform(feedsList, "name"));
         feedsListView.setAdapter(adapter);
         feedsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, SingleFeedActivity.class);
                 intent.putExtra("id", feedsList.get(position).getId());
+                Log.d("Intent", "" + feedsList.get(position).getId());
                 startActivity(intent);
             }
         });
     }
 
     private void fetchFeed() {
-        RestAPI.get("/feed", null, new JsonHttpResponseHandler() {
+        RestAPI.get("me/feeds", null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 try {
                     feedsList = new Gson().fromJson(response.toString(), new TypeToken<List<Feed>>() {}.getType());
+                    swipeContainer.setRefreshing(false);
                     loadContent();
                 } catch (Throwable ex) {
                     Log.d("Feed", "Unable to parse feeds.");
@@ -80,8 +82,10 @@ public class FeedsListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("Api error", errorResponse.toString());
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                loading.setVisibility(View.GONE);
+                emptyText.setVisibility(View.VISIBLE);
+                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -95,7 +99,6 @@ public class FeedsListActivity extends AppCompatActivity {
         addFeedButton = (FloatingActionButton)findViewById(R.id.addFeedButton);
         addFeedButton.setImageDrawable(new IconDrawable(this, FontAwesomeIcons.fa_plus).colorRes(R.color.white));
         feedsListView = (ListView) findViewById(R.id.feedList);
-        feedsListView.setVisibility(View.GONE);
         emptyText = (TextView)findViewById(R.id.empty_view);
         emptyText.setVisibility(View.GONE);
         loading = (IconTextView)findViewById(R.id.loading);
@@ -107,14 +110,18 @@ public class FeedsListActivity extends AppCompatActivity {
             }
         });
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setVisibility(View.GONE);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {fetchFeed();}
         });
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        swipeContainer.setColorSchemeResources(android.R.color.holo_orange_light);
+        fetchFeed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         fetchFeed();
     }
 }

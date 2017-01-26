@@ -7,27 +7,23 @@ import java.io.Serializable;
  */
 
 public class NewsItem implements Serializable {
-    private int id;
+    private String link;
     private String title;
 
-    public int getId() {
-        return id;
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
+
+    public String getLink() {
+        return link;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLink(String link) {
+        this.link = link;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public NewsItem(int id, String title) {
-        this.id = id;
+    public NewsItem(String link, String title) {
+        this.link = link;
         this.title = title;
     }
 }

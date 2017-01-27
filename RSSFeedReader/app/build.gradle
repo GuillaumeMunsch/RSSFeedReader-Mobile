@@ -32,5 +32,5 @@ dependencies {
     compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile group: 'com.google.code.gson', name: 'gson', version: '1.7.2'
-
+    compile 'com.github.brnunes:swipeablerecyclerview:1.0.2'
 }

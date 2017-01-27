@@ -43,9 +43,9 @@ public class SingleFeedActivity extends AppCompatActivity {
         loading.setVisibility(View.GONE);
         if (news.getItems().size() == 0) {
             emptyText.setVisibility(View.VISIBLE);
-            newsListView.setVisibility(View.GONE);
+            swipeContainer.setVisibility(View.GONE);
         } else {
-            newsListView.setVisibility(View.VISIBLE);
+            swipeContainer.setVisibility(View.VISIBLE);
             emptyText.setVisibility(View.GONE);
         }
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, Utils.transform(news.getItems(), "title"));
@@ -54,6 +54,9 @@ public class SingleFeedActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, NewsDetailActivity.class);
+                intent.putExtra("title", news.getItems().get(position).getTitle());
+                intent.putExtra("description", news.getItems().get(position).getDescription());
+                intent.putExtra("url", news.getItems().get(position).getLink());
                 startActivity(intent);
             }
         });
@@ -65,7 +68,7 @@ public class SingleFeedActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     news = new Gson().fromJson(response.toString(), new TypeToken<News>() {}.getType());
-                    swipeContainer.setVisibility(View.VISIBLE);
+                    swipeContainer.setRefreshing(false);
                     loadContent();
                 } catch (Throwable ex) {
                     Log.d("Feed", "Unable to parse news.");
@@ -87,7 +90,6 @@ public class SingleFeedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_single_feed);
         context = this;
         newsListView = (ListView) findViewById(R.id.newsList);
-        newsListView.setVisibility(View.GONE);
         emptyText = (TextView)findViewById(R.id.empty_view);
         emptyText.setVisibility(View.GONE);
         loading = (IconTextView)findViewById(R.id.loading);

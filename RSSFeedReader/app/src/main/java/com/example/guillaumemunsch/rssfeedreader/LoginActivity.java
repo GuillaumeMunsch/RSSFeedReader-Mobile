@@ -25,6 +25,7 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.cookie.Cookie;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * A login screen that offers login via email/password.
@@ -37,16 +38,16 @@ public class LoginActivity extends AppCompatActivity {
     String token;
 
     private void tryConnection() {
-        RequestParams params = new RequestParams();
+        JSONObject params = new JSONObject();
+        StringEntity stringEntity = null;
         try {
-            params.add("email", emailInput.getText().toString());
-            params.add("password", passwordInput.getText().toString());
+            params.put("email", emailInput.getText().toString());
+            params.put("password", passwordInput.getText().toString());
+            stringEntity = new StringEntity(params.toString());
+        } catch (Throwable ex) {
+            Log.d("Login", ex.getMessage());
         }
-        catch (Throwable ex)
-        {
-            Log.d("Connection", ex.getMessage());
-        }
-        RestAPI.post("auth/login", params, new JsonHttpResponseHandler() {
+        RestAPI.post(context, "auth/login", stringEntity, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
     private void checkConnected() {
         RestAPI.get("auth/check", null, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 startActivity(new Intent(context, FeedsListActivity.class));
             }
 
@@ -87,20 +88,6 @@ public class LoginActivity extends AppCompatActivity {
 
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
         RestAPI.getClient().setCookieStore(myCookieStore);
-/*        List<Cookie> cookies = myCookieStore.getCookies();
-        String session = "";
-
-        if (cookies.isEmpty()) {
-            Log.i("TAG", "None");
-        } else {
-            for (int i = 0; i < cookies.size(); i++) {
-                session += cookies.get(i).getName()+"="+cookies.get(i).getValue()+"; ";
-
-            }
-            Log.i("session", session);
-        }
-        RestAPI.getClient().addHeader("Cookie", session.substring(0, session.length() - 1));*/
-
 
         emailInput = (EditText)findViewById(R.id.user);
         passwordInput = (EditText)findViewById(R.id.password);

@@ -15,12 +15,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.guillaumemunsch.rssfeedreader.adapter.FeedListAdapter;
 import com.example.guillaumemunsch.rssfeedreader.http.RestAPI;
 import com.example.guillaumemunsch.rssfeedreader.models.Feed;
 import com.example.guillaumemunsch.rssfeedreader.recycler.DividerItemDecoration;
 import com.example.guillaumemunsch.rssfeedreader.recycler.RecyclerItemClickListener;
 import com.example.guillaumemunsch.rssfeedreader.utils.Utils;
+import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.joanzapata.iconify.IconDrawable;
@@ -40,32 +43,91 @@ import cz.msebera.android.httpclient.Header;
 public class FeedsListActivity extends AppCompatActivity {
     Context context;
     FloatingActionButton addFeedButton;
-    ListView feedsListView;
+    RecyclerView feedsListView;
     List<Feed> feedsList;
     TextView emptyText;
     IconTextView loading;
     SwipeRefreshLayout swipeContainer;
+    private FeedListAdapter mAdapter;
+
+    private void removeFeed(int id) {
+        RestAPI.delete("me/feeds/" + id, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("Feed", "Delete failed");
+            }
+        });
+    }
 
     public void loadContent(){
         loading.setVisibility(View.GONE);
         if (feedsList.size() == 0) {
             emptyText.setVisibility(View.VISIBLE);
-            swipeContainer.setVisibility(View.INVISIBLE);
+            swipeContainer.setVisibility(View.GONE);
         } else {
             swipeContainer.setVisibility(View.VISIBLE);
-            emptyText.setVisibility(View.INVISIBLE);
+            emptyText.setVisibility(View.GONE);
         }
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, Utils.transform(feedsList, "name"));
-        feedsListView.setAdapter(adapter);
-        feedsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(context, SingleFeedActivity.class);
-                intent.putExtra("id", feedsList.get(position).getId());
-                Log.d("Intent", "" + feedsList.get(position).getId());
-                startActivity(intent);
-            }
-        });
+
+        mAdapter = new FeedListAdapter(feedsList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getApplicationContext());
+        feedsListView.setLayoutManager(mLayoutManager);
+        feedsListView.setItemAnimator(new DefaultItemAnimator());
+        feedsListView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        feedsListView.setAdapter(mAdapter);
+        feedsListView.addOnItemTouchListener(
+            new RecyclerItemClickListener(context, feedsListView ,new RecyclerItemClickListener.OnItemClickListener() {
+                @Override public void onItemClick(View view, int position) {
+                    Intent intent = new Intent(context, SingleFeedActivity.class);
+                    intent.putExtra("id", feedsList.get(position).getId());
+                    startActivity(intent);
+                }
+
+                @Override public void onLongItemClick(View view, int position) {
+                    // do whatever
+                }
+            })
+        );
+        SwipeableRecyclerViewTouchListener swipeTouchListener =
+                new SwipeableRecyclerViewTouchListener(feedsListView,
+                        new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                            @Override
+                            public boolean canSwipeLeft(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public boolean canSwipeRight(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    removeFeed(feedsList.get(position).getId());
+                                    feedsList.remove(position);
+                                    mAdapter.notifyItemRemoved(position);
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    removeFeed(feedsList.get(position).getId());
+                                    feedsList.remove(position);
+                                    mAdapter.notifyItemRemoved(position);
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+        feedsListView.addOnItemTouchListener(swipeTouchListener);
     }
 
     private void fetchFeed() {
@@ -98,7 +160,7 @@ public class FeedsListActivity extends AppCompatActivity {
         context = this;
         addFeedButton = (FloatingActionButton)findViewById(R.id.addFeedButton);
         addFeedButton.setImageDrawable(new IconDrawable(this, FontAwesomeIcons.fa_plus).colorRes(R.color.white));
-        feedsListView = (ListView) findViewById(R.id.feedList);
+        feedsListView = (RecyclerView)findViewById(R.id.feedList);
         emptyText = (TextView)findViewById(R.id.empty_view);
         emptyText.setVisibility(View.GONE);
         loading = (IconTextView)findViewById(R.id.loading);

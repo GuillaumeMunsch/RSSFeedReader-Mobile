@@ -88,45 +88,42 @@ public class FeedsListActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
 
-                @Override public void onLongItemClick(View view, int position) {
-                    // do whatever
-                }
+                @Override public void onLongItemClick(View view, int position) {}
             })
         );
         SwipeableRecyclerViewTouchListener swipeTouchListener =
-                new SwipeableRecyclerViewTouchListener(feedsListView,
-                        new SwipeableRecyclerViewTouchListener.SwipeListener() {
-                            @Override
-                            public boolean canSwipeLeft(int position) {
-                                return true;
-                            }
+            new SwipeableRecyclerViewTouchListener(feedsListView,
+                new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                    @Override
+                    public boolean canSwipeLeft(int position) {
+                        return true;
+                    }
 
-                            @Override
-                            public boolean canSwipeRight(int position) {
-                                return true;
-                            }
+                    @Override
+                    public boolean canSwipeRight(int position) {
+                        return true;
+                    }
 
-                            @Override
-                            public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                                for (int position : reverseSortedPositions) {
-                                    removeFeed(feedsList.get(position).getId());
-                                    feedsList.remove(position);
-                                    mAdapter.notifyItemRemoved(position);
-                                }
-                                mAdapter.notifyDataSetChanged();
-                            }
+                    @Override
+                    public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                        for (int position : reverseSortedPositions) {
+                            removeFeed(feedsList.get(position).getId());
+                            feedsList.remove(position);
+                            mAdapter.notifyItemRemoved(position);
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    }
 
-                            @Override
-                            public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                                for (int position : reverseSortedPositions) {
-                                    removeFeed(feedsList.get(position).getId());
-                                    feedsList.remove(position);
-                                    mAdapter.notifyItemRemoved(position);
-                                }
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        });
-
+                    @Override
+                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                        for (int position : reverseSortedPositions) {
+                            removeFeed(feedsList.get(position).getId());
+                            feedsList.remove(position);
+                            mAdapter.notifyItemRemoved(position);
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
         feedsListView.addOnItemTouchListener(swipeTouchListener);
     }
 
@@ -168,7 +165,7 @@ public class FeedsListActivity extends AppCompatActivity {
         addFeedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context, AddFeedActivity.class));
+            startActivity(new Intent(context, AddFeedActivity.class));
             }
         });
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);

@@ -39,7 +39,6 @@ public class NewsDetailActivity extends AppCompatActivity {
                 try {
                     startActivity(intent);
                 } catch (ActivityNotFoundException ex) {
-                    // Chrome browser presumably not installed so allow user to choose instead
                     intent.setPackage(null);
                     startActivity(intent);
                 }

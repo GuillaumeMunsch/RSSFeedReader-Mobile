@@ -53,11 +53,11 @@ public class SingleFeedActivity extends AppCompatActivity {
         newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(context, NewsDetailActivity.class);
-                intent.putExtra("title", news.getItems().get(position).getTitle());
-                intent.putExtra("description", news.getItems().get(position).getDescription());
-                intent.putExtra("url", news.getItems().get(position).getLink());
-                startActivity(intent);
+            Intent intent = new Intent(context, NewsDetailActivity.class);
+            intent.putExtra("title", news.getItems().get(position).getTitle());
+            intent.putExtra("description", news.getItems().get(position).getDescription());
+            intent.putExtra("url", news.getItems().get(position).getLink());
+            startActivity(intent);
             }
         });
     }

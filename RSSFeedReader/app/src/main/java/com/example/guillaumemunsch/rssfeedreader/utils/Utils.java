@@ -37,8 +37,7 @@ public class Utils {
     }
 
     public static boolean storeToken(Context c, String token) {
-        SharedPreferences settings = PreferenceManager
-                .getDefaultSharedPreferences(c);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("token", token);
         editor.commit();
@@ -51,8 +50,7 @@ public class Utils {
     }
 
     public static boolean storeInfo(Context c, String info, String token) {
-        SharedPreferences settings = PreferenceManager
-                .getDefaultSharedPreferences(c);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(info, token);
         editor.commit();

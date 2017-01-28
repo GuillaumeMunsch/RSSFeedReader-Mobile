@@ -39,8 +39,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_feed, parent, false);
-
+            .inflate(R.layout.list_item_feed, parent, false);
         return new MyViewHolder(itemView);
     }
 

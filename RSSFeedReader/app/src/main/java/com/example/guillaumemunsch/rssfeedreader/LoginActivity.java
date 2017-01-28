@@ -75,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseBody, Throwable throwable) {
                 Log.d("Not connected", responseBody.toString());
-                Log.d("Not connected---2", throwable.toString());
             }
         });
     }
@@ -93,10 +92,9 @@ public class LoginActivity extends AppCompatActivity {
         passwordInput = (EditText)findViewById(R.id.password);
         passwordInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    tryConnection();
-                }
-                return false;
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE))
+                tryConnection();
+            return false;
             }
         });
         connectButton = (Button)findViewById(R.id.connection_button);
@@ -110,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, CreateAccount.class));
+            startActivity(new Intent(LoginActivity.this, CreateAccount.class));
             }
         });
         checkConnected();

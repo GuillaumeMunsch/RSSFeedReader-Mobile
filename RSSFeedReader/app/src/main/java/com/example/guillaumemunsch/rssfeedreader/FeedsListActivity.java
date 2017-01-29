@@ -174,7 +174,7 @@ public class FeedsListActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {fetchFeed();}
         });
-        swipeContainer.setColorSchemeResources(android.R.color.holo_orange_light);
+        swipeContainer.setColorSchemeResources(R.color.colorAccent);
         fetchFeed();
     }
 

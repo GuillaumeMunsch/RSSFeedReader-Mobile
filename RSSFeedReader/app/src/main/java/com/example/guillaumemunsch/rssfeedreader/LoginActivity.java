@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     Button connectButton = null;
     Button createAccount;
     EditText emailInput, passwordInput;
+    ImageView image;
     String token;
 
     private void tryConnection() {
@@ -88,6 +90,8 @@ public class LoginActivity extends AppCompatActivity {
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
         RestAPI.getClient().setCookieStore(myCookieStore);
 
+        image = (ImageView)findViewById(R.id.image);
+        image.setImageDrawable(getResources().getDrawable(R.drawable.logo));
         emailInput = (EditText)findViewById(R.id.user);
         passwordInput = (EditText)findViewById(R.id.password);
         passwordInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {

@@ -100,7 +100,7 @@ public class SingleFeedActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {fetchNews();}
         });
-        swipeContainer.setColorSchemeResources(android.R.color.holo_orange_light);
+        swipeContainer.setColorSchemeResources(R.color.colorAccent);
         fetchNews();
     }
 }
